@@ -1,15 +1,19 @@
+using api.Middleware;
 using api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Tls;
 namespace api.Controllers;
 [ApiController]
+[Authorize]
+// [AllowAnonymous]
 [Route("[controller]")]
 public class UserController : ControllerBase
 {
     DapperContext _dapperContext;
-    public UserController(IConfiguration config)
+    public UserController(DapperContext dapperContext)
     {
-        _dapperContext = new DapperContext(config);
+        _dapperContext = dapperContext;
     }
     [HttpGet("{name}", Name = "GetUser")]
     public string[] Get(string name)
@@ -18,7 +22,8 @@ public class UserController : ControllerBase
 
         return result;
     }
-    [HttpGet("", Name = "")]
+    [HttpGet("GetAll", Name = "")]
+    [TestMiddleware]
     public List<Users> GetAll()
     {
 
@@ -28,31 +33,16 @@ public class UserController : ControllerBase
     [HttpGet("/{id}", Name = "GetUserById")]
     public Users GetById(int id)
     {
-        return _dapperContext.GetById<Users>(id);
+        string query = $"SELECT name,email,id FROM Users WHERE Id = @Id";
+        return _dapperContext.QuerySingle<Users>(query, new { Id = id });
     }
 
     [HttpPost("", Name = "insertUser")]
-    public Users Store(Users user)
+    public IActionResult Store(Users user)
     {
+        int id = _dapperContext.Insert(user);
 
-        List<string> Fields = new List<string>
-{
-    "Email",
-    "Password",
-    "Mobile",
-    "CreatedAt",
-    "UpdatedAt",
-    "Type",
-    "City",
-    "Address1",
-    "Address2",
-    "GovId",
-    "CityId",
-    "Name"
-};
-        string query = "INSERT INTO Users (Name, Email) VALUES (@Name, @Email)";
-        _dapperContext.Execute(query, user);
-        return user;
+        return Ok(id);
     }
 
 }

@@ -1,12 +1,12 @@
 namespace api.Models
 {
-    public class UsersModels 
+    public class UsersModels
     {
-        public DapperContext dapperContext;
-        public UsersModels(IConfiguration configuration)
+        public DapperContext _dapperContext;
+        public UsersModels(DapperContext dapperContext)
         {
 
-            dapperContext = new DapperContext(configuration);
+            _dapperContext = dapperContext;
         }
     }
 }
