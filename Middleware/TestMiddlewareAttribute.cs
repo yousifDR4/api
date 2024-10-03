@@ -1,31 +1,27 @@
-using Microsoft.AspNetCore.Http;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System.Threading.Tasks;
-
 namespace api.Middleware
 {
-    public class TestMiddlewareAttribute : TypeFilterAttribute
+    public class TestMiddlewareAttribute : Attribute, IAsyncActionFilter     
     {
-        public TestMiddlewareAttribute() : base(typeof(TestMiddlewareFilter))
+
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-        }
-
-        private class TestMiddlewareFilter : IAsyncActionFilter
-        {
-            private readonly TestMiddleware _middleware;
-
-            public TestMiddlewareFilter(TestMiddleware middleware)
+            Console.WriteLine("Before Action Execution\n");
+            if (true)
             {
-                _middleware = middleware;
-            }
-
-            public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
-            {
-                var httpContext = context.HttpContext;
-                await _middleware.InvokeAsync(httpContext);
                 await next();
+            }
+            else
+            {
+                context.Result = new ContentResult()
+                {
+                    Content = "Unauthorized",
+                    StatusCode = 401
+                };
             }
         }
     }
-}
+
+} 

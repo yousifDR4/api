@@ -1,22 +1,17 @@
 using api;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
-builder.Services.AddTransient<TestMiddleware>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("DevCors", corsBuilder =>
   {
-      corsBuilder.WithOrigins("http://localhost:3000")
+      corsBuilder.WithOrigins("*")
           .AllowAnyHeader()
-          .AllowAnyMethod().
-          AllowCredentials();
+          .AllowAnyMethod()
+          ;
   });
     options.AddPolicy("ProdCors", corsBuilder =>
  {
