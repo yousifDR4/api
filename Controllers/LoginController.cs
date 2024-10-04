@@ -44,7 +44,7 @@ namespace api.Controllers
                 if (VerifyPassword(loginDto.Password, user.PasswordSalt, user.Password))
                 {
                     string token = _jwt.Create(user);
-                    return Ok(new { token });
+                    return Ok(new { token, user.Id });
                 }
                 else
                 {
