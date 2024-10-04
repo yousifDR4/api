@@ -6,9 +6,11 @@ namespace api.Seeders
     public class ReservationsSedder
     {
 
-        private readonly string[] Stars = { "1", "2", "3", "4", "5" };
         string[] columns = {  "UserId",
-        "Stars", "RestaurantId", "Comment"
+        "RestaurantId",
+         "TableId",
+         "Person_Number"
+         ,"AttendanceTime"
        };
         private readonly MigrationBuilder _context;
 
@@ -20,15 +22,17 @@ namespace api.Seeders
         public void Seed(int userId, int restaurantId)
         {
 
+
             var faker = new Faker();
             object[] values = new object[] { userId,
-             Stars[faker.Random.Number(0, 4)],
               restaurantId,
-             faker.Lorem.Sentence()
+               faker.Random.Number(2, 12),
+                faker.Random.Number(0, 8),
+             faker.Date.Between(new DateTime(2024, 10, 5), new DateTime(2024, 12, 31))
             };
 
             _context.InsertData(
-                table: "reviews",
+                table: "reservations",
                 columns: columns,
                 values: values
             );

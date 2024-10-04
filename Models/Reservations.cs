@@ -14,7 +14,7 @@ namespace api.Models
         [Required]
         public int TableId { get; set; }
         [Required]
-        public int PersonNumber { get; set; }
+        public int Person_Number { get; set; }
         public string Type { get; set; } = "NORMAL";
         public string? Note { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;

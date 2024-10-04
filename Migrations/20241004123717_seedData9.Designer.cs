@@ -11,8 +11,8 @@ using api;
 namespace api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241004122215_seedData7")]
-    partial class seedData7
+    [Migration("20241004123717_seedData9")]
+    partial class seedData9
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,7 +43,7 @@ namespace api.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("PersonNumber")
+                    b.Property<int>("Person_Number")
                         .HasColumnType("int");
 
                     b.Property<int>("RestaurantId")

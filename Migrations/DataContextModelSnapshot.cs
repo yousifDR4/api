@@ -40,7 +40,7 @@ namespace api.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("PersonNumber")
+                    b.Property<int>("Person_Number")
                         .HasColumnType("int");
 
                     b.Property<int>("RestaurantId")
