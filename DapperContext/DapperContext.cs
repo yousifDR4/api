@@ -1,3 +1,4 @@
+using System.Data;
 using Dapper;
 using MySql.Data.MySqlClient;
 
@@ -16,39 +17,58 @@ namespace api
 
         public async Task<IEnumerable<T>> LoadDataAsync<T>()
         {
-            await connection.OpenAsync();
+            if (connection.State == ConnectionState.Closed)
+            {
+                await connection.OpenAsync();
+            }
+
             return await connection.QueryAsync<T>("SELECT * FROM " + typeof(T).Name);
         }
 
         public async Task<IEnumerable<T>> QueryAsync<T>(string query, object? parameters)
         {
-            await connection.OpenAsync();
+            if (connection.State == ConnectionState.Closed)
+            {
+                await connection.OpenAsync();
+            }
             return await connection.QueryAsync<T>(query, parameters);
         }
 
         public async Task<T> QuerySingleAsync<T>(string query, object? parameters)
         {
-            await connection.OpenAsync();
+            if (connection.State == ConnectionState.Closed)
+            {
+                await connection.OpenAsync();
+            }
             return await connection.QuerySingleAsync<T>(query, parameters);
         }
 
         public async Task<int> ExecuteAsync(string query, object? parameters)
         {
-            await connection.OpenAsync();
+            if (connection.State == ConnectionState.Closed)
+            {
+                await connection.OpenAsync();
+            }
             return await connection.ExecuteAsync(query, parameters);
         }
 
         public async Task<T> GetByIdAsync<T>(int id)
         {
             string query = $"SELECT * FROM {typeof(T).Name} WHERE Id = @Id";
-            await connection.OpenAsync();
+            if (connection.State == ConnectionState.Closed)
+            {
+                await connection.OpenAsync();
+            }
             return await connection.QuerySingleAsync<T>(query, new { Id = id });
         }
 
         public async Task<IEnumerable<T1>> GetByKeyAsync<T1, T2>(string key, T2 id)
         {
             string query = $"SELECT * FROM {typeof(T1).Name} WHERE {key} = @Id";
-            await connection.OpenAsync();
+            if (connection.State == ConnectionState.Closed)
+            {
+                await connection.OpenAsync();
+            }
             return await connection.QueryAsync<T1>(query, new { Id = id });
         }
 
@@ -58,9 +78,13 @@ namespace api
             {
                 List<string> keys = parameters.GetType().GetProperties().Select(p => p.Name).ToList();
                 string keysString = string.Join(",", keys);
+
                 string values = string.Join(",@", keys);
                 string query = $"INSERT INTO {typeof(T).Name} ({keysString}) VALUES (@{values}); SELECT LAST_INSERT_ID();";
-                await connection.OpenAsync();
+                if (connection.State == ConnectionState.Closed)
+                {
+                    await connection.OpenAsync();
+                }
                 return await connection.QuerySingleAsync<int>(query, parameters);
             }
             else

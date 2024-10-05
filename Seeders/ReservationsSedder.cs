@@ -24,6 +24,7 @@ namespace api.Seeders
 
 
             var faker = new Faker();
+            
             object[] values = new object[] { userId,
               restaurantId,
                faker.Random.Number(2, 12),

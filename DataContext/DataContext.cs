@@ -36,7 +36,9 @@ namespace api
           HasKey(user => user.Id);
             modelBuilder.Entity<Reservations>().ToTable("reservations").
             HasKey(user => user.Id);
-        
+
+      
+
         }
 
     }

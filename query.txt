@@ -1,0 +1,13 @@
+SELECT 
+    CASE 
+        WHEN TIME(AttendanceTime) BETWEEN '18:00:00' AND '23:59:59' THEN 'Night'
+        WHEN TIME(AttendanceTime) BETWEEN '01:00:00' AND '12:00:00' THEN 'Morning'
+        WHEN TIME(AttendanceTime) BETWEEN '12:00:01' AND '17:59:59' THEN 'Afternoon'
+        ELSE 'Invalid Time'
+    END AS TimePeriod,
+    Id, RestaurantId, AttendanceTime, IsActive
+FROM reservations
+WHERE RestaurantId = 3 
+AND TIME(AttendanceTime) BETWEEN '01:00:00' AND '23:59:59' 
+GROUP BY TimePeriod
+; 

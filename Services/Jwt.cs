@@ -19,8 +19,8 @@ public class Jwt
         {
             Subject = new ClaimsIdentity([
                 new Claim(JwtRegisteredClaimNames.Name, user.Email),
-                new Claim(JwtRegisteredClaimNames.Sub, user.Type),
-                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString())
+                new Claim(JwtRegisteredClaimNames.Aud, user.Type),
+                new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString())
             ]),
             Expires = DateTime.Now.AddDays(1),
             SigningCredentials = new SigningCredentials(SecurityKey, SecurityAlgorithms.HmacSha256Signature)

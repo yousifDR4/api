@@ -16,7 +16,7 @@ namespace api.Controllers
         {
             return await _dapperContext.LoadDataAsync<Reviews>();
         }
-        [HttpGet("{RestaurantId}")]
+        [HttpGet("count/{RestaurantId}")]
         public async Task<IEnumerable<object>> RestaurantReviewsCount(int RestaurantId)
         {
             return await _dapperContext.QueryAsync<object>
