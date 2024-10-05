@@ -16,6 +16,7 @@ namespace api.Controllers
             _Model = new RestaurantModel(_dapperContext);
         }
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Store(Restaurants restaurant)
         {
             int Id = await _dapperContext.InsertAsync(restaurant);
@@ -42,6 +43,14 @@ namespace api.Controllers
         public async Task<IActionResult> update(int restaurantId, Restaurants restaurant)
         {
             await _dapperContext.UpdateAsync(restaurant, restaurantId);
+            return Ok();
+        }
+        [HttpDelete("{restaurantId}")]
+        [Authorize]
+        [RestaurantMiddlewareOwner]
+        public async Task<IActionResult> Delete(int restaurantId)
+        {
+            await _dapperContext.DeleteAsync<Restaurants>(restaurantId);
             return Ok();
         }
     }

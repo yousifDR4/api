@@ -1,7 +1,6 @@
 using System.Data;
 using Dapper;
 using MySql.Data.MySqlClient;
-
 namespace api
 {
     public class DapperContext
@@ -105,8 +104,6 @@ namespace api
                 }
                 string setClause = string.Join(", ", setClauses);
                 string query = $"UPDATE {typeof(T).Name} SET {setClause} WHERE Id = @Id";
-                Console.WriteLine(query);
-
                 if (connection.State == ConnectionState.Closed)
                 {
                     await connection.OpenAsync();
@@ -124,5 +121,16 @@ namespace api
                 return 0;
             }
         }
+        public async Task<int> DeleteAsync<T>(int Id)
+        {
+            string query = $"DELETE FROM {typeof(T).Name} WHERE Id = @Id";
+            if (connection.State == ConnectionState.Closed)
+            {
+                await connection.OpenAsync();
+            }
+            return await connection.ExecuteAsync(query, new { Id });
+        }
+
     }
+
 }
