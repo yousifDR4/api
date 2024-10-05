@@ -1,3 +1,4 @@
+using api.Middleware;
 using api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,7 +36,13 @@ namespace api.Controllers
             var users = await _dapperContext.LoadDataAsync<Restaurants>();
             return users.ToList();
         }
-        // supporters 
-        //owners
+        [HttpPut("{restaurantId}")]
+        [Authorize]
+        [RestaurantMiddlewareOwner]
+        public async Task<IActionResult> update(int restaurantId, Restaurants restaurant)
+        {
+            await _dapperContext.UpdateAsync(restaurant, restaurantId);
+            return Ok();
+        }
     }
 }

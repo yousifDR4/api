@@ -92,5 +92,37 @@ namespace api
                 return 0;
             }
         }
+        public async Task<int> UpdateAsync<T>(T parameters, int Id)
+        {
+            if (parameters != null)
+            {
+                List<string> keys = parameters.GetType().GetProperties().Select(p => p.Name).ToList();
+                List<string> setClauses = new List<string>();
+                for (int i = 0; i < keys.Count; i++)
+                {
+                    if (keys[i] != "Id")
+                        setClauses.Add($"{keys[i]} = @{keys[i]}");
+                }
+                string setClause = string.Join(", ", setClauses);
+                string query = $"UPDATE {typeof(T).Name} SET {setClause} WHERE Id = @Id";
+                Console.WriteLine(query);
+
+                if (connection.State == ConnectionState.Closed)
+                {
+                    await connection.OpenAsync();
+                }
+
+                var parametersWithId = parameters.GetType().GetProperties().ToDictionary(p => p.Name, p => p.GetValue(parameters));
+                parametersWithId["Id"] = Id;
+
+                var sqlParameters = parametersWithId.Select(p => new MySqlParameter($"@{p.Key}", p.Value ?? DBNull.Value)).ToArray();
+
+                return await connection.ExecuteAsync(query, parametersWithId);
+            }
+            else
+            {
+                return 0;
+            }
+        }
     }
 }

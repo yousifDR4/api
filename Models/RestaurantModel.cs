@@ -12,11 +12,11 @@ public class RestaurantModel
         (@"SELECT * FROM Owners  WHERE userId=@userId AND restaurantId=@restaurantId",
          new { restaurantId, userId });
     }
-    public async Task<IEnumerable<T>> isOwnerToRestaurant<T>( int userId)
+    public async Task<IEnumerable<T>> isOwnerToRestaurant<T>(int userId)
     {
         return await _dapperContext.QueryAsync<T>
         (@"SELECT * FROM Owners  WHERE   userId=@userId",
-         new {  userId });
+         new { userId });
     }
     public async Task<IEnumerable<T>> OwnersAll<T>(int userId)
     {

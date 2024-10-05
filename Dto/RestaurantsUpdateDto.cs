@@ -1,11 +1,10 @@
 
 namespace api.Models;
 public
- class Restaurants
+ class RestaurantsUpdateDto
 {
-    public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
-    public string Contrary { get; set; } = string.Empty;
+    public string Country { get; set; } = string.Empty;
     public int CityId { get; set; }
     public int GovId { get; set; }
     public double Atu { get; set; }
@@ -19,6 +18,4 @@ public
     public double Discount { get; set; }
     public string Description { get; set; } = string.Empty;
     public bool Shisha { get; set; }
-    public DateTime Created_At { get; set; } = DateTime.Now;
-    public DateTime Updated_At { get; set; } = DateTime.Now;
 }
