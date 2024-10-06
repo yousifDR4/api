@@ -130,7 +130,30 @@ namespace api
             }
             return await connection.ExecuteAsync(query, new { Id });
         }
-
+        public async Task<int> DeleteMany<T>(IEnumerable<T> Ids, string q, string key = null)
+        {
+            List<MySqlParameter> parameters = new List<MySqlParameter>();
+            var conditions = new List<string>();
+            foreach (T Id in Ids)
+            {
+                var parameterName = $"@supporter{Id}";
+                conditions.Add($"supporterId = {parameterName}");
+                parameters.Add(new MySqlParameter(parameterName, Id));  // Use unique parameter name here
+            }
+            string conditionString = string.Join(" OR ", conditions);
+            string query = $"{q} {conditionString}";
+            MySqlCommand mySql = new MySqlCommand(query);
+            foreach (MySqlParameter item in parameters)
+            {
+                mySql.Parameters.Add(item);
+            }
+            mySql.Connection = connection;
+            if (connection.State == ConnectionState.Closed)
+            {
+                await connection.OpenAsync();
+            }
+            int result = await mySql.ExecuteNonQueryAsync();
+            return result;
+        }
     }
-
 }

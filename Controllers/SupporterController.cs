@@ -1,3 +1,4 @@
+using api.Dto;
 using api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,14 +28,25 @@ public class SupporterController : ControllerBase
     }
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> AddSupporter(Restaurant_Supporters supporter)
+    public async Task<IActionResult> AddSupporter(SupportersDto supportersDto)
     {
+        string email = supportersDto.Email;
+        IEnumerable<Users> users = await _dapperContext.GetByKeyAsync<Users, string>("Email", email);
+        if (users == null || !users.Any())
+        {
+            return BadRequest("no user found with this email");
+        }
         int userIdClaim = getUserId();
         if (userIdClaim > 0)
         {
-            IEnumerable<object> resturant = await model.Owners<object>(supporter.RestaurantId, userIdClaim);
+            IEnumerable<object> resturant = await model.Owners<object>(supportersDto.RestaurantId, userIdClaim);
             if (resturant != null && resturant.Any())
             {
+                Restaurant_Supporters supporter = new()
+                {
+                    RestaurantId = supportersDto.RestaurantId,
+                    SupporterId = users.First().Id
+                };
                 var result = await _dapperContext.InsertAsync(supporter);
                 return Ok(result);
             }
@@ -47,7 +59,6 @@ public class SupporterController : ControllerBase
         {
             return BadRequest();
         }
-
     }
     [HttpDelete("{id}")]
     [Authorize]

@@ -10,6 +10,7 @@ namespace api.Middleware
         {
             DapperContext _dapperContext = context.HttpContext.RequestServices.GetService<DapperContext>() ?? throw new ArgumentNullException(nameof(DapperContext));
             int restaurantId = int.Parse(context.RouteData.Values["restaurantId"] + "");
+            
             RestaurantModel _Model = new RestaurantModel(_dapperContext);
             var userIdClaim = context.HttpContext.User.FindFirst("jti")?.Value + "";
             if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out int parsedUserId))

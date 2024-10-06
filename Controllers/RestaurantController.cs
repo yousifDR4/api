@@ -1,7 +1,10 @@
+using api.Dto;
 using api.Middleware;
 using api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MySql.Data.MySqlClient;
+using Mysqlx.Crud;
 namespace api.Controllers
 {
     [ApiController]
@@ -60,6 +63,30 @@ namespace api.Controllers
         {
             IEnumerable<object> accounts = await _Model.RestaurantAccounts<object>(restaurantId);
             return Ok(accounts);
+        }
+        [HttpDelete("{restaurantId}/accounts/{supporterId}")]
+        [Authorize]
+        [RestaurantMiddlewareOwner]
+        public async Task<IActionResult> DeleteAccounts(int restaurantId, int supporterId)
+        {
+            IEnumerable<object> accounts = await _dapperContext.QueryAsync<object>
+            ("DELETE FROM restaurant_supporters WHERE restaurantId = @restaurantId AND supporterId = @supporterId",
+            new { restaurantId, supporterId }
+            );
+            return Ok(accounts);
+        }
+        [HttpDelete("{restaurantId}/accounts")]
+        [Authorize]
+        [RestaurantMiddlewareOwner]
+        public async Task<IActionResult> DeleteAccount(int restaurantId, DeleteSupporterDto deleteSupporterDto)
+        {
+            IEnumerable<int> Ids = deleteSupporterDto.supporterId;
+            if (Ids == null || !Ids.Any())
+            {
+                return BadRequest("No supporter IDs provided.");
+            }
+            return Ok(await _dapperContext.DeleteMany(Ids, "DELETE FROM restaurant_supporters WHERE"));
+
         }
 
     }
