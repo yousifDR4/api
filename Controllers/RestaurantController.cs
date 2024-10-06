@@ -53,5 +53,14 @@ namespace api.Controllers
             await _dapperContext.DeleteAsync<Restaurants>(restaurantId);
             return Ok();
         }
+        [HttpGet("accounts/{restaurantId}")]
+        [Authorize]
+        [RestaurantMiddlewareOwner]
+        public async Task<IActionResult> getAccounts(int restaurantId)
+        {
+            IEnumerable<object> accounts = await _Model.RestaurantAccounts<object>(restaurantId);
+            return Ok(accounts);
+        }
+
     }
 }
