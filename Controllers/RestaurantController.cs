@@ -3,8 +3,7 @@ using api.Middleware;
 using api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MySql.Data.MySqlClient;
-using Mysqlx.Crud;
+using api.Repository;
 namespace api.Controllers
 {
     [ApiController]
@@ -13,10 +12,13 @@ namespace api.Controllers
     {
         DapperContext _dapperContext;
         private readonly RestaurantModel _Model;
+        private menuRepository _menueRepository;
         public RestaurantController(DapperContext dapperContext)
         {
             _dapperContext = dapperContext;
             _Model = new RestaurantModel(_dapperContext);
+            _menueRepository = new menuRepository(dapperContext);
+
         }
         [HttpPost]
         [Authorize]
@@ -86,6 +88,85 @@ namespace api.Controllers
                 return BadRequest("No supporter IDs provided.");
             }
             return Ok(await _dapperContext.DeleteMany(Ids, "DELETE FROM restaurant_supporters WHERE"));
+
+        }
+        [HttpPost("{restaurantId}/menue")]
+        [Authorize]
+        [RestaurantMiddlewareOwner]
+        public async Task<IActionResult> StoreMenue(Menu menue)
+        {
+            try
+            {
+                return Ok(await _menueRepository.Storemenu(menue));
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+
+        }
+        [HttpGet("{restaurantId}/menue/{menuId}")]
+        [Authorize]
+        [RestaurantMiddlewareOwner]
+        public async Task<IActionResult> GetmenuById(int menuId)
+        {
+            try
+            {
+                return Ok(await _menueRepository.GetmenuById(menuId));
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+
+        }
+        [HttpGet("{restaurantId}/menue/")]
+        [Authorize]
+        [RestaurantMiddlewareOwner]
+        public async Task<IActionResult> GetAllmenu(int menuId)
+        {
+            try
+            {
+                return Ok(await _menueRepository.GetAllmenus());
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+
+        }
+        [HttpGet("{restaurantId}/menu/{menuId}")]
+        [Authorize]
+        [RestaurantMiddlewareOwner]
+        public async Task<IActionResult> UpdatemenuDish(int menuId, int restaurantId, Menu menu)
+        {
+            try
+            {
+
+                await _menueRepository.UpdatemenuDish(menuId, restaurantId, menu);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+
+        }
+        [HttpDelete("{restaurantId}/menu/{menuId}")]
+        [Authorize]
+        [RestaurantMiddlewareOwner]
+        public async Task<IActionResult> DeletemenuDish(int menuId, int restaurantId, Menu menu)
+        {
+            try
+            {
+
+                await _menueRepository.DeletemenuItem(menuId, restaurantId);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
 
         }
 

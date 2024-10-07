@@ -60,6 +60,7 @@ namespace api
             }
             return await connection.QuerySingleAsync<T>(query, new { Id = id });
         }
+  
 
         public async Task<IEnumerable<T1>> GetByKeyAsync<T1, T2>(string key, T2 id)
         {
