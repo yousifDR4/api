@@ -164,12 +164,34 @@ namespace api.Controllers
         [HttpGet("{restaurantId}/menu/{menuId}")]
         [Authorize]
         [RestaurantMiddlewareOwner]
-        public async Task<IActionResult> UpdatemenuDish(int menuId, int restaurantId, Menu menu)
+        public async Task<IActionResult> UpdatemenuDish(int menuId, int restaurantId, [FromForm] MenuDto menueDto)
         {
+            string image1 = "";
             try
             {
+                if (menueDto.ImageFile != null)
+                {
+                    image1 = uploadFile.uplaod(menueDto.ImageFile);
+                }
+            }
+            catch (System.Exception e)
+            {
 
-                await _menueRepository.UpdatemenuDish(menuId, restaurantId, menu);
+                return BadRequest(e.Message);
+            }
+            try
+            {
+                Menu menue = new Menu()
+                {
+
+                    Name = menueDto.Name,
+                    Description = menueDto.Description,
+                    Image = image1,
+                    Price = menueDto.Price,
+                    RestaurantId = restaurantId,
+                    FoodCategoryId = menueDto.FoodCategoryId
+                };
+                await _menueRepository.UpdatemenuDish(menuId, restaurantId, menue);
                 return Ok();
             }
             catch (Exception e)
@@ -185,7 +207,6 @@ namespace api.Controllers
         {
             try
             {
-
                 await _menueRepository.DeletemenuItem(menuId, restaurantId);
                 return Ok();
             }
