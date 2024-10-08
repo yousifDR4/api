@@ -4,6 +4,7 @@ using api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using api.Repository;
+using api.Seeders;
 namespace api.Controllers
 {
     [ApiController]
@@ -13,11 +14,13 @@ namespace api.Controllers
         DapperContext _dapperContext;
         private readonly RestaurantModel _Model;
         private menuRepository _menueRepository;
+        private UploadFile uploadFile;
         public RestaurantController(DapperContext dapperContext)
         {
             _dapperContext = dapperContext;
             _Model = new RestaurantModel(_dapperContext);
             _menueRepository = new menuRepository(dapperContext);
+            uploadFile = new UploadFile();
 
         }
         [HttpPost]
@@ -93,10 +96,33 @@ namespace api.Controllers
         [HttpPost("{restaurantId}/menue")]
         [Authorize]
         [RestaurantMiddlewareOwner]
-        public async Task<IActionResult> StoreMenue(Menu menue)
+        public async Task<IActionResult> StoreMenue(int restaurantId, [FromForm] MenuDto menueDto)
         {
+            string image1 = "";
             try
             {
+                if (menueDto.ImageFile != null)
+                {
+                    image1 = uploadFile.uplaod(menueDto.ImageFile);
+                }
+            }
+            catch (System.Exception e)
+            {
+
+                return BadRequest(e.Message);
+            }
+            try
+            {
+                Menu menue = new Menu()
+                {
+
+                    Name = menueDto.Name,
+                    Description = menueDto.Description,
+                    Image = image1,
+                    Price = menueDto.Price,
+                    RestaurantId = restaurantId,
+                    FoodCategoryId = menueDto.FoodCategoryId
+                };
                 return Ok(await _menueRepository.Storemenu(menue));
             }
             catch (Exception e)

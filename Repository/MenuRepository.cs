@@ -2,7 +2,6 @@ using api.Models;
 
 namespace api.Repository
 {
-
         public class menuRepository : ImenuRepository
         {
             private readonly DapperContext _context;
