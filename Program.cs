@@ -4,6 +4,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(5070);  // Listen on all IP addresses
+});
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("DevCors", corsBuilder =>
