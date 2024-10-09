@@ -93,9 +93,9 @@ namespace api.Controllers
             return Ok(await _dapperContext.DeleteMany(Ids, "DELETE FROM restaurant_supporters WHERE"));
 
         }
-         [HttpPost("{restaurantId}/menue")]
+        [HttpPost("{restaurantId}/menue")]
         // [Authorize]
-        //[RestaurantMiddlewareOwner]
+        // [RestaurantMiddlewareOwner]
         public async Task<IActionResult> StoreMenue(int restaurantId, [FromForm] MenuDto menueDto)
         {
             string image1 = "";
