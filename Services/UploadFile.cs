@@ -46,7 +46,7 @@ namespace api.Services
             catch (System.Exception)
             {
 
-                throw new Exception("File not found");
+                throw new FileNotFoundException("File not found");
             }
 
         }
@@ -65,12 +65,12 @@ namespace api.Services
 
             if (!System.IO.File.Exists(path))
             {
-                throw new Exception("File not found");
+                throw new FileNotFoundException("File not found");
             }
 
             if (!System.IO.File.Exists(path))
             {
-                throw new Exception("File not found");
+                throw new FileNotFoundException("File not found");
             }
 
             return System.IO.File.ReadAllBytes(path);
