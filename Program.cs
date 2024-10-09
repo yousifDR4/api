@@ -1,9 +1,14 @@
 using api;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+Log.Logger = new LoggerConfiguration().MinimumLevel.Information().
+WriteTo.File("other/log.log", rollingInterval: RollingInterval.Day)
+.CreateLogger();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("DevCors", corsBuilder =>

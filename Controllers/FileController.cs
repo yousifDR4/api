@@ -2,6 +2,7 @@ using api.Models;
 using api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 namespace api.Controllers;
 [ApiController]
 [Route("[controller]")]
@@ -30,15 +31,16 @@ public class FileController : ControllerBase
         {
             if (e is FileNotFoundException)
             {
+                Log.Error("Error in Restaurant/{@restaurantId}/Image/{@ImageName} {@e}", restaurantId, ImageName, e);
                 return NotFound("File not found");
             }
             else
+            {
+                Log.Fatal("Internal Server Error Restaurant/{@restaurantId}/Image/{@ImageName} {@e}", restaurantId, ImageName, e);
                 return StatusCode(500, "Internal Server Error");
+            }
         }
 
     }
-
-
-
 }
 
