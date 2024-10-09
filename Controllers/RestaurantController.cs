@@ -94,8 +94,8 @@ namespace api.Controllers
 
         }
         [HttpPost("{restaurantId}/menue")]
-        [Authorize]
-        [RestaurantMiddlewareOwner]
+        // [Authorize]
+        // [RestaurantMiddlewareOwner]
         public async Task<IActionResult> StoreMenue(int restaurantId, [FromForm] MenuDto menueDto)
         {
             string image1 = "";
