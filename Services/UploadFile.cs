@@ -3,7 +3,7 @@ namespace api.Services
 {
     public class UploadFile
     {
-        public string upload(IFormFile file, string folder)
+         public string upload(IFormFile file, string folder)
         {
             // Allowed file extensions
             List<string> allowedExtensions = new List<string> { ".jpg", ".jpeg", ".png" };
@@ -30,10 +30,8 @@ namespace api.Services
             string filePath = Path.Combine(directoryPath, fileName);
 
             // Save the file
-
             using (FileStream stream = new FileStream(filePath, FileMode.Create))
             {
-                Console.WriteLine(filePath);
                 file.CopyTo(stream);
             }
 
