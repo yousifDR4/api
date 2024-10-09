@@ -24,10 +24,12 @@ namespace api.Services
                 Directory.CreateDirectory(dir);
 
             }
-            filePath = Path.Combine(filePath, fileName);
+
             // Save the file
+
             using (FileStream stream = new FileStream(filePath, FileMode.Create))
             {
+                Console.WriteLine(filePath);
                 file.CopyTo(stream);
             }
 
