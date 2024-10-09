@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using api.Repository;
 using api.Services;
+using Serilog;
 namespace api.Controllers
 {
     [ApiController]
@@ -43,6 +44,7 @@ namespace api.Controllers
         public async Task<List<Restaurants>> GetAll()
         {
             var users = await _dapperContext.LoadDataAsync<Restaurants>();
+            Log.Information("Task<List<Restaurants>> GetAll() {@users}", users);
             return users.ToList();
         }
         [HttpPut("{restaurantId}")]
@@ -108,7 +110,7 @@ namespace api.Controllers
             }
             catch (System.Exception e)
             {
-
+                Log.Error("Error in HttpPost(restaurantId/menue) {@e}", e);
                 return BadRequest(e.Message);
             }
             try

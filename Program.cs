@@ -1,5 +1,6 @@
 using api;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -8,6 +9,10 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 {
     serverOptions.ListenAnyIP(5070);  // Listen on all IP addresses
 });
+Log.Logger = new LoggerConfiguration().MinimumLevel.Information().
+WriteTo.File("other/log.log", rollingInterval: RollingInterval.Day)
+.CreateLogger();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("DevCors", corsBuilder =>

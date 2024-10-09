@@ -1,6 +1,7 @@
 using System.Data;
 using Dapper;
 using MySql.Data.MySqlClient;
+using Serilog;
 namespace api
 {
     public class DapperContext
@@ -18,9 +19,17 @@ namespace api
         {
             if (connection.State == ConnectionState.Closed)
             {
-                await connection.OpenAsync();
-            }
+                try
+                {
+                    await connection.OpenAsync();
+                }
+                catch (System.Exception e)
+                {
 
+                    Log.Fatal("Error in LoadDataAsync {@e}", e);
+                    throw new Exception("Error in LoadDataAsync", e);
+                }
+            }
             return await connection.QueryAsync<T>("SELECT * FROM " + typeof(T).Name);
         }
 
@@ -28,7 +37,15 @@ namespace api
         {
             if (connection.State == ConnectionState.Closed)
             {
-                await connection.OpenAsync();
+                try
+                {
+                    await connection.OpenAsync();
+                }
+                catch (System.Exception e)
+                {
+                    Log.Fatal("Error in QueryAsync when oppening connection  {@e}", e);
+                    throw new Exception("Error in QueryAsync when oppening connectionc", e);
+                }
             }
             return await connection.QueryAsync<T>(query, parameters);
         }
@@ -37,7 +54,16 @@ namespace api
         {
             if (connection.State == ConnectionState.Closed)
             {
-                await connection.OpenAsync();
+                try
+                {
+                    await connection.OpenAsync();
+                }
+                catch (System.Exception e)
+                {
+                    Log.Fatal("Error inQuerySingleAsync when oppening connection  {@e}", e);
+                    throw new Exception("Error in QuerySingleAsync when oppening connectionc", e);
+                }
+
             }
             return await connection.QuerySingleAsync<T>(query, parameters);
         }
@@ -56,18 +82,37 @@ namespace api
             string query = $"SELECT * FROM {typeof(T).Name} WHERE Id = @Id";
             if (connection.State == ConnectionState.Closed)
             {
-                await connection.OpenAsync();
+                try
+                {
+                    await connection.OpenAsync();
+                }
+                catch (System.Exception e)
+                {
+
+                    Log.Fatal("Error in GetByIdAsync when oppening connection  {@e}", e);
+                    throw new Exception("Error in GetByIdAsync when oppening connectionc", e);
+                }
             }
             return await connection.QuerySingleAsync<T>(query, new { Id = id });
         }
-  
+
 
         public async Task<IEnumerable<T1>> GetByKeyAsync<T1, T2>(string key, T2 id)
         {
             string query = $"SELECT * FROM {typeof(T1).Name} WHERE {key} = @Id";
             if (connection.State == ConnectionState.Closed)
             {
-                await connection.OpenAsync();
+                try
+                {
+                    await connection.OpenAsync();
+
+                }
+                catch (System.Exception e)
+                {
+                    Log.Fatal("Error in GetByIdAsync when oppening connection  {@e}", e);
+                    throw new Exception("Error in GetByIdAsync when oppening connectionc", e);
+
+                }
             }
             return await connection.QueryAsync<T1>(query, new { Id = id });
         }
@@ -83,7 +128,17 @@ namespace api
                 string query = $"INSERT INTO {typeof(T).Name} ({keysString}) VALUES (@{values}); SELECT LAST_INSERT_ID();";
                 if (connection.State == ConnectionState.Closed)
                 {
-                    await connection.OpenAsync();
+                    try
+                    {
+                        await connection.OpenAsync();
+                    }
+                    catch (System.Exception e)
+                    {
+
+                        Log.Fatal("Error in GetByIdAsync when oppening connection  {@e}", e);
+                        throw new Exception("Error in GetByIdAsync when oppening connectionc", e);
+                    }
+
                 }
                 return await connection.QuerySingleAsync<int>(query, parameters);
             }
@@ -107,7 +162,16 @@ namespace api
                 string query = $"UPDATE {typeof(T).Name} SET {setClause} WHERE Id = @Id";
                 if (connection.State == ConnectionState.Closed)
                 {
-                    await connection.OpenAsync();
+                    try
+                    {
+
+                        await connection.OpenAsync();
+                    }
+                    catch (System.Exception e)
+                    {
+                        Log.Fatal("Error in UpdateAsync when oppening connection  {@e}", e);
+                        throw new Exception("Error in UpdateAsync when oppening connectionc", e);
+                    }
                 }
 
                 var parametersWithId = parameters.GetType().GetProperties().ToDictionary(p => p.Name, p => p.GetValue(parameters));
@@ -127,7 +191,16 @@ namespace api
             string query = $"DELETE FROM {typeof(T).Name} WHERE Id = @Id";
             if (connection.State == ConnectionState.Closed)
             {
-                await connection.OpenAsync();
+                try
+                {
+
+                    await connection.OpenAsync();
+                }
+                catch (System.Exception e)
+                {
+                    Log.Fatal("Error in DeleteAsync when oppening connection  {@e}", e);
+                    throw new Exception("Error in DeleteAsync when oppening connectionc", e);
+                }
             }
             return await connection.ExecuteAsync(query, new { Id });
         }
@@ -151,7 +224,16 @@ namespace api
             mySql.Connection = connection;
             if (connection.State == ConnectionState.Closed)
             {
-                await connection.OpenAsync();
+                try
+                {
+                    await connection.OpenAsync();
+                }
+                catch (System.Exception e)
+                {
+                    Log.Fatal("Error in UpdateAsync when oppening connection  {@e}", e);
+                    throw new Exception("Error in UpdateAsync when oppening connectionc", e);
+
+                }
             }
             int result = await mySql.ExecuteNonQueryAsync();
             return result;
