@@ -10,7 +10,6 @@ public class FileController : ControllerBase
     private readonly DapperContext _dapperContext;
     private readonly MenuModel _MenueModel;
     private readonly UploadFile _uploadFile;
-
     public FileController(DapperContext dapperContext)
     {
         _dapperContext = dapperContext;
@@ -23,7 +22,20 @@ public class FileController : ControllerBase
     {
         string path = Path.Combine(Directory.GetCurrentDirectory(), "..", "uploads", restaurantId.ToString(), ImageName);
         var imageFileStream = _uploadFile.GetImage(path);
-        return File(imageFileStream, "image/png");
+        try
+        {
+            return File(imageFileStream, "image/png");
+        }
+        catch (System.Exception e)
+        {
+            if (e is FileNotFoundException)
+            {
+                return NotFound("File not found");
+            }
+            else
+                return StatusCode(500, "Internal Server Error");
+        }
+
     }
 
 
