@@ -4,7 +4,7 @@ using api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using api.Repository;
-using api.Seeders;
+using api.Services;
 namespace api.Controllers
 {
     [ApiController]
@@ -103,7 +103,7 @@ namespace api.Controllers
             {
                 if (menueDto.ImageFile != null)
                 {
-                    image1 = uploadFile.uplaod(menueDto.ImageFile);
+                    image1 = uploadFile.upload(menueDto.ImageFile, restaurantId.ToString());
                 }
             }
             catch (System.Exception e)
@@ -171,7 +171,7 @@ namespace api.Controllers
             {
                 if (menueDto.ImageFile != null)
                 {
-                    image1 = uploadFile.uplaod(menueDto.ImageFile);
+                    image1 = uploadFile.upload(menueDto.ImageFile, restaurantId.ToString());
                 }
             }
             catch (System.Exception e)

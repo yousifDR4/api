@@ -1,4 +1,5 @@
-namespace api.Seeders
+using System.Drawing;
+namespace api.Services
 {
     public class UploadFile
     {
@@ -49,6 +50,32 @@ namespace api.Seeders
             }
 
         }
+        public byte[] GetFile(string path)
+        {
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException("File not found", path);
+            }
+
+            return File.ReadAllBytes(path);
+        }
+        public byte[] GetImage(string path)
+        {
+
+
+            if (!System.IO.File.Exists(path))
+            {
+                throw new Exception("File not found");
+            }
+
+            if (!System.IO.File.Exists(path))
+            {
+                throw new Exception("File not found");
+            }
+
+            return System.IO.File.ReadAllBytes(path);
+        }
+
 
     }
 }

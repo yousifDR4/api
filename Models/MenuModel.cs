@@ -7,9 +7,9 @@ namespace api.Models
         {
             _dapperContext = DapperContext;
         }
-        public async Task<IEnumerable<Menu>> getResturantMenu(int restaurantId)
+        public async Task<IEnumerable<object>> getResturantMenu(int restaurantId)
         {
-            return await _dapperContext.QueryAsync<Menu>
+            return await _dapperContext.QueryAsync<object>
             (@"SELECT menu.*, food_category.name AS categoryName 
                     FROM menu
                     LEFT JOIN food_category ON menu.foodCategoryId = food_category.id

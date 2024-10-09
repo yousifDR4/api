@@ -15,12 +15,12 @@ public class MenuController : ControllerBase
         _MenueModel = new MenuModel(dapperContext);
     }
     [HttpGet("resturant/{resturantId}")]
-    public async Task<List<Menu>> GetAll(int resturantId)
+    public async Task<IEnumerable<object>> GetAll(int resturantId)
     {
-        IEnumerable<Menu> menus = await _MenueModel.getResturantMenu(resturantId);
+        IEnumerable<object> menus = await _MenueModel.getResturantMenu(resturantId);
         return menus.ToList();
     }
 
- 
+
 }
 
