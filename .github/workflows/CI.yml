@@ -5,38 +5,38 @@ name: .NET
 
 on:
   push:
-    branches: [ "production" ]
+    branches: ["production"]
   pull_request:
-    branches: [ "production" ]
+    branches: ["production"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
-    - name: Publish
-      run: dotnet publish -c Release -o build
-  # Add the published build to the production branch
-    - name: Commit and Push Build Output to Production
-      run: |
-       git config --local user.name "yousif"
-       git config --local user.email "yousifd39@gmail.com"
-       git add build/
-       git commit -m "Add build output from CI"
-       git push origin production
-       git push https://$PAT_TOKEN@github.com/yousifDR4/api.git production
-      env:
-        PAT_TOKEN: ${{ secrets.PAT_TOKEN }}   
-  
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
+      - name: Publish
+        run: dotnet publish -c Release -o build
+      # Add the published build to the production branch
+      - name: check token echo $PAT_TOKEN
+        run: git checkout production
+      - name: Commit and Push Build Output to Production
+        run: |
+          git config --local user.name "yousif"
+          git config --local user.email "yousifd39@gmail.com"
+          git add build/
+          git commit -m "Add build output from CI"
+          git push origin production
+          git push https://$PAT_TOKEN@github.com/yousifDR4/api.git production
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
