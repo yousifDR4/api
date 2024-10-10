@@ -1,30 +1,23 @@
 name: Deploy to EC2
-
 on:
-  push:
-    branches: [ "production" ]
   workflow_run:
-    workflows: [".NET"]  # Replace with the name of your CI workflow file if different
+    workflows: [".NET"] # Replace with the name of your CI workflow file if different
     types:
       - completed
 
 jobs:
   deploy:
-    runs-on: self-hosted # Specify self-hosted runner
+    runs-on: self-hosted
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: navgate to the API directory
-      run: cd  /var/www/api 
+      - name: Sync code to server
+        run: |
+          cd /var/www/api  # Navigate to the project directory
+          sudo rsync -av --delete ./ /var/www/api  # Sync code to the desired directory
 
-    - name: Copy Files to Target Directory
-      run: |
-        # Adjust this command to match your deployment setup
-        sudo git pull origin production
-
-    - name: Restart Application
-      run: |
-        # Command to restart your application, adjust as necessary
-        sudo systemctl restart myapi.service
+      - name: Restart your service (if needed)
+        run: |
+          sudo systemctl restart myapi.service  # Optional: restart the service if required
