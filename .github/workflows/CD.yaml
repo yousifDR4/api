@@ -22,7 +22,7 @@ jobs:
       - name: Copy Files to Target Directory
         run: |
           # Adjust this command to match your deployment setup
-          sudo git pull origin production
+          sudo git pull  production
 
       - name: Restart Application
         run: |
