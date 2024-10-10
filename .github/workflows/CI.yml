@@ -31,6 +31,8 @@ jobs:
   # Add the published build to the production branch
     - name: Commit and Push Build Output to Production
       run: |
+       git config --local user.name "yousif"
+       git config --local user.email "yousifd39@gmail.com"
        git add build/
        git commit -m "Add build output from CI"
        git push origin production
