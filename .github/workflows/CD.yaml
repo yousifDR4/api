@@ -15,7 +15,7 @@ jobs:
 
       - name: Sync code to server
         run: |
-          cd /var/www/api  # Navigate to the project directory
+
           sudo rsync -av --delete ./ /var/www/api  # Sync code to the desired directory
 
       - name: Restart your service (if needed)
