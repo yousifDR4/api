@@ -27,4 +27,4 @@ jobs:
     - name: Restart Application
       run: |
         # Command to restart your application, adjust as necessary
-        sudo systemctl restart myapp.service
+        sudo systemctl restart myapi.service
