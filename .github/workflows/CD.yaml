@@ -15,8 +15,15 @@ jobs:
 
       - name: Sync code to server
         run: |
-
+         
           sudo rsync -av --delete ./ /var/www/api  # Sync code to the desired directory
+      - name: Switch to 'Production' branch on server
+        run: |
+          cd /var/www/api
+          git fetch  # Fetch latest branches and commits
+          git checkout Production  # Switch to Production branch
+          git pull origin Production  # Pull the latest code from Production branch
+          
 
       - name: Restart your service (if needed)
         run: |
