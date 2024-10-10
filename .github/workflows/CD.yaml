@@ -1,0 +1,25 @@
+name: Deploy to EC2
+on:
+  workflow_run:
+    workflows: [".NET"] # Replace with the name of your CI workflow file if different
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Sync code to server
+        run: |
+         
+          sudo rsync -av --delete ./ /var/www/api  # Sync code to the desired directory
+      - name: Switch to 'Production' branch on server
+        run: |
+          cd /var/www/api
+          sudo git fetch  # Fetch latest branches and commits
+          sudo git checkout production  # Switch to Production branch
+          sudo git pull origin production  # Pull the latest code from Production branch
