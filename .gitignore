@@ -45,7 +45,6 @@ ehthumbs.db
 # Folder config file
 Desktop.ini
 
-# Recycle Bin used on file shares
 $RECYCLE.BIN/
 
 # VS Code directories
@@ -55,3 +54,4 @@ $RECYCLE.BIN/
 # Rider
 .idea/
 .vs
+appsettings.json
