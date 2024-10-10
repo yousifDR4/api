@@ -28,8 +28,8 @@ jobs:
       - name: Publish
         run: dotnet publish -c Release -o build
       # Add the published build to the production branch
-      - name: check token echo $PAT_TOKEN
-        run: git checkout production
+      - name: check token 
+        run: echo $PAT_TOKEN
       - name: Commit and Push Build Output to Production
         run: |
           git config --local user.name "yousif"
