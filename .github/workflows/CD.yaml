@@ -1,5 +1,4 @@
 name: Deploy to EC2
-
 on:
   push:
     branches: ["production"]
@@ -14,15 +13,15 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
-      - name: navgate to the API directory
-        run: cd  /var/www/api
+      - name: Navigate to the API directory
+        run: cd /var/www/api
 
       - name: Copy Files to Target Directory
         run: |
           # Adjust this command to match your deployment setup
-          sudo git pull  production
+          sudo git pull origin production --force
 
       - name: Restart Application
         run: |
