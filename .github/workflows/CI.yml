@@ -13,11 +13,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      issues: write
+      contents: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+          fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -33,11 +36,13 @@ jobs:
       # Add the published build to the production branch
       - name: Commit and Push Build Output to Production
         run: |
-          git config --local user.name "yousif"
-          git config --local user.email "yousifd39@gmail.com"
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add build/
           git commit -m "Add build output from CI"
-          git push origin production
-          git push https://$PAT_TOKEN@github.com/yousifDR4/api.git production
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+      - name: Push changes to production branch  
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
