@@ -19,7 +19,7 @@ jobs:
       - name: Copy Files to Target Directory
         run: |
           # Adjust this command to match your deployment setup
-          sudo git pull origin production --force
+          sudo git pull origin production --rebase
 
       - name: Restart Application
         run: |
