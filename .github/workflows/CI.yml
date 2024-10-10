@@ -36,4 +36,7 @@ jobs:
        git add build/
        git commit -m "Add build output from CI"
        git push origin production
+       git push https://$PAT_TOKEN@github.com/yousifDR4/api.git production
+      env:
+        PAT_TOKEN: ${{ secrets.PAT_TOKEN }}   
   
