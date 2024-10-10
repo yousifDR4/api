@@ -23,3 +23,6 @@ jobs:
           sudo git fetch  # Fetch latest branches and commits
           sudo git checkout production  # Switch to Production branch
           sudo git pull origin production  # Pull the latest code from Production branch
+      - name: Restart the server
+        run: |
+          sudo systemctl restart myapi.service  # Restart the server to apply changes    
