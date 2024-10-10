@@ -28,8 +28,10 @@ jobs:
       run: dotnet test --no-build --verbosity normal
     - name: Publish
       run: dotnet publish -c Release -o build
-    - name: Upload build artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: published-build
-        path: build/   
+  # Add the published build to the production branch
+    - name: Commit and Push Build Output to Production
+      run: |
+       git add build/
+       git commit -m "Add build output from CI"
+       git push origin production
+  
