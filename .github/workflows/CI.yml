@@ -12,6 +12,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
 
     steps:
       - uses: actions/checkout@v4
@@ -28,8 +31,6 @@ jobs:
       - name: Publish
         run: dotnet publish -c Release -o build
       # Add the published build to the production branch
-      - name: check token 
-        run: echo $PAT_TOKEN
       - name: Commit and Push Build Output to Production
         run: |
           git config --local user.name "yousif"
@@ -39,4 +40,4 @@ jobs:
           git push origin production
           git push https://$PAT_TOKEN@github.com/yousifDR4/api.git production
         env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
