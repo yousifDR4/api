@@ -7,21 +7,17 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted # Specify self-hosted runner
+    runs-on: self-hosted
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Navigate to the API directory
-        run: cd /var/www/api
-
-      - name: Copy Files to Target Directory
+      - name: Sync code to server
         run: |
-          # Adjust this command to match your deployment setup
-          sudo git pull origin production --rebase
+          cd /var/www/api  # Navigate to the project directory
+          sudo rsync -av --delete ./ /var/www/api  # Sync code to the desired directory
 
-      - name: Restart Application
+      - name: Restart your service (if needed)
         run: |
-          # Command to restart your application, adjust as necessary
-          sudo systemctl restart myapi.service
+          sudo systemctl restart myapi.service  # Optional: restart the service if required
