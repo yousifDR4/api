@@ -18,12 +18,12 @@ public class FileController : ControllerBase
         _uploadFile = new UploadFile();
 
     }
-    [HttpGet("Restaurant/{restaurantId}/Image/{ImageName}")]
     [HttpGet("justatest")]
     public IActionResult justatest()
     {
         return Ok("just a test");
     }
+    [HttpGet("Restaurant/{restaurantId}/Image/{ImageName}")]
     public IActionResult GetImage(int restaurantId, string ImageName)
     {
         string path = Path.Combine(Directory.GetCurrentDirectory(), "..", "uploads", restaurantId.ToString(), ImageName);
