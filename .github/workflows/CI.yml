@@ -39,4 +39,9 @@ jobs:
       - name: Deploy to Server
         run: |
           rsync -avz build/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.SSH_DEST_PATH }}
-
+      - name: Copy appsettings.json
+        run: |
+         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:"mv /home/ubuntu/settings/appsettings.json ${{ secrets.SSH_DEST_PATH }}/appsettings.json"
+      - name: Restart server
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "sudo systemctl restart myapi.service"
