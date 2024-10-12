@@ -46,7 +46,7 @@ namespace api.Controllers
                 if (restaurants != null)
                     return Ok(restaurants);
                 else
-                    return BadRequest("Invalid Restaurant Id");
+                    return BadRequest("no restaurants found");
             }
             else
                 return BadRequest("Invalid User Id");
