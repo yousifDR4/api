@@ -3,9 +3,9 @@ name: .NET
 on:
   push:
     branches: ["production"]
+
   pull_request:
     branches: ["production"]
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -41,3 +41,9 @@ jobs:
       - name: Deploy to Server
         run: |
           rsync -avz build/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.SSH_DEST_PATH }}
+
+     
+      - name: Restart server
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "sudo systemctl restart myapi.service"
+

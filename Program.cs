@@ -5,6 +5,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(5070);  // Listen on all IP addresses
+});
 Log.Logger = new LoggerConfiguration().MinimumLevel.Information().
 WriteTo.File("other/log.log", rollingInterval: RollingInterval.Day)
 .CreateLogger();
@@ -39,6 +43,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // Register the custom middleware
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
