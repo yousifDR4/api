@@ -3,7 +3,7 @@ namespace api.Services
 {
     public class UploadFile
     {
-        public string upload(IFormFile file, string folder)
+         public string upload(IFormFile file, string folder)
         {
             // Allowed file extensions
             List<string> allowedExtensions = new List<string> { ".jpg", ".jpeg", ".png" };

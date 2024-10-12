@@ -125,7 +125,13 @@ namespace api.Controllers
                     RestaurantId = restaurantId,
                     FoodCategoryId = menueDto.FoodCategoryId
                 };
-                return Ok(await _menueRepository.Storemenu(menue));
+                if (image1 == "")
+                    return Ok(await _menueRepository.Storemenu(menue));
+                else
+                {
+                    int Id = await _dapperContext.InsertAsync(menue);
+                    return Ok(new { Id, image1 });
+                }
             }
             catch (Exception e)
             {
