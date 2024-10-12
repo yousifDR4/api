@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Data;
 using Dapper;
 using MySql.Data.MySqlClient;
@@ -13,6 +14,14 @@ namespace api
         {
             _config = config;
             connection = new MySqlConnection(_config.GetConnectionString("DefaultConnection"));
+        }
+        public async Task CloseConnection()
+        {
+            if (connection.State == ConnectionState.Open)
+            {
+                await connection.CloseAsync();
+            }
+
         }
 
         public async Task<IEnumerable<T>> LoadDataAsync<T>()
@@ -30,7 +39,9 @@ namespace api
                     throw new Exception("Error in LoadDataAsync", e);
                 }
             }
-            return await connection.QueryAsync<T>("SELECT * FROM " + typeof(T).Name);
+            IEnumerable<T> Data = await connection.QueryAsync<T>("SELECT * FROM " + typeof(T).Name);
+            await CloseConnection();
+            return Data;
         }
 
         public async Task<IEnumerable<T>> QueryAsync<T>(string query, object? parameters)
@@ -47,7 +58,9 @@ namespace api
                     throw new Exception("Error in QueryAsync when oppening connectionc", e);
                 }
             }
-            return await connection.QueryAsync<T>(query, parameters);
+            IEnumerable<T> data = await connection.QueryAsync<T>(query, parameters);
+            await CloseConnection();
+            return data;
         }
 
         public async Task<T> QuerySingleAsync<T>(string query, object? parameters)
@@ -65,7 +78,9 @@ namespace api
                 }
 
             }
-            return await connection.QuerySingleAsync<T>(query, parameters);
+            T row = await connection.QuerySingleAsync<T>(query, parameters);
+            await CloseConnection();
+            return row;
         }
 
         public async Task<int> ExecuteAsync(string query, object? parameters)
@@ -74,7 +89,9 @@ namespace api
             {
                 await connection.OpenAsync();
             }
-            return await connection.ExecuteAsync(query, parameters);
+            int id = await connection.ExecuteAsync(query, parameters);
+            await CloseConnection();
+            return id;
         }
 
         public async Task<T> GetByIdAsync<T>(int id)
@@ -93,7 +110,9 @@ namespace api
                     throw new Exception("Error in GetByIdAsync when oppening connectionc", e);
                 }
             }
-            return await connection.QuerySingleAsync<T>(query, new { Id = id });
+            T row = await connection.QuerySingleAsync<T>(query, new { Id = id });
+            await CloseConnection();
+            return row;
         }
 
 
@@ -114,7 +133,9 @@ namespace api
 
                 }
             }
-            return await connection.QueryAsync<T1>(query, new { Id = id });
+            IEnumerable<T1> data = await connection.QueryAsync<T1>(query, new { Id = id });
+            await CloseConnection();
+            return data;
         }
 
         public async Task<int> InsertAsync<T>(T parameters)
@@ -140,7 +161,9 @@ namespace api
                     }
 
                 }
-                return await connection.QuerySingleAsync<int>(query, parameters);
+                int NewId = await connection.QuerySingleAsync<int>(query, parameters);
+                await CloseConnection();
+                return NewId;
             }
             else
             {
@@ -178,11 +201,13 @@ namespace api
                 parametersWithId["Id"] = Id;
 
                 var sqlParameters = parametersWithId.Select(p => new MySqlParameter($"@{p.Key}", p.Value ?? DBNull.Value)).ToArray();
-
-                return await connection.ExecuteAsync(query, parametersWithId);
+                int newId = await connection.ExecuteAsync(query, parametersWithId);
+                await CloseConnection();
+                return newId;
             }
             else
             {
+                await CloseConnection();
                 return 0;
             }
         }
@@ -198,11 +223,14 @@ namespace api
                 }
                 catch (System.Exception e)
                 {
+
                     Log.Fatal("Error in DeleteAsync when oppening connection  {@e}", e);
                     throw new Exception("Error in DeleteAsync when oppening connectionc", e);
                 }
             }
-            return await connection.ExecuteAsync(query, new { Id });
+            int NewId = await connection.ExecuteAsync(query, new { Id });
+            await CloseConnection();
+            return NewId;
         }
         public async Task<int> DeleteMany<T>(IEnumerable<T> Ids, string q, string key = null)
         {
@@ -236,6 +264,7 @@ namespace api
                 }
             }
             int result = await mySql.ExecuteNonQueryAsync();
+            await CloseConnection();
             return result;
         }
     }

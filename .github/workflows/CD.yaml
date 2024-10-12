@@ -30,4 +30,10 @@ jobs:
         run: |
           sudo systemctl restart myapi.service  # Restart the server to apply changes    
 
-      
+
+    - name: Restart Application
+      run: |
+        # Command to restart your application, adjust as necessary
+        sudo systemctl restart myapi.service
+
+
