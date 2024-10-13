@@ -7,7 +7,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    serverOptions.ListenAnyIP(5070);  // Listen on all IP addresses
+    serverOptions.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
 });
 Log.Logger = new LoggerConfiguration().MinimumLevel.Information().
 WriteTo.File("other/log.log", rollingInterval: RollingInterval.Day)
