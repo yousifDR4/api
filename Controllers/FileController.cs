@@ -19,12 +19,12 @@ public class FileController : ControllerBase
 
     }
     [HttpGet("Restaurant/{restaurantId}/Image/{ImageName}")]
-    public IActionResult GetImage(int restaurantId, string ImageName)
+    public IActionResult GetRestaurantImage(int restaurantId, string ImageName)
     {
-        string path = Path.Combine(Directory.GetCurrentDirectory(), "..", "uploads", restaurantId.ToString(), ImageName);
-        var imageFileStream = _uploadFile.GetImage(path);
+        string path = Path.Combine(Directory.GetCurrentDirectory(), "..", "uploads", "restaurant", restaurantId.ToString(), ImageName);
         try
         {
+            byte[] imageFileStream = _uploadFile.GetImage(path);
             return File(imageFileStream, "image/png");
         }
         catch (System.Exception e)

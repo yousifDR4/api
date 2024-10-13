@@ -21,7 +21,7 @@ public class RestaurantModel
     public async Task<IEnumerable<T>> OwnersAll<T>(int userId)
     {
         return await _dapperContext.QueryAsync<T>
-        (@"SELECT userId as uid, restaurantId FROM Owners 
+        (@"SELECT userId as uid, restaurants.* FROM Owners 
         JOIN restaurants on restaurantId=restaurants.id
          WHERE userId=@userId 
         ",

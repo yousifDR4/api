@@ -6,7 +6,7 @@ namespace api.Services
         public string upload(IFormFile file, string folder)
         {
             // Allowed file extensions
-            List<string> allowedExtensions = new List<string> { ".jpg", ".jpeg", ".png" };
+            List<string> allowedExtensions = new List<string> { ".jpg", ".jpeg", ".png", ".web" };
             string extension = Path.GetExtension(file.FileName);
 
             // Check if the file extension is allowed
@@ -68,15 +68,9 @@ namespace api.Services
         public byte[] GetImage(string path)
         {
 
-
             if (!System.IO.File.Exists(path))
             {
-                throw new FileNotFoundException("File not found");
-            }
-
-            if (!System.IO.File.Exists(path))
-            {
-                throw new FileNotFoundException("File not found");
+                throw new FileNotFoundException("File not found2");
             }
 
             return System.IO.File.ReadAllBytes(path);

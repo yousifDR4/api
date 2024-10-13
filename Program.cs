@@ -5,6 +5,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
+});
 Log.Logger = new LoggerConfiguration().MinimumLevel.Information().
 WriteTo.File("other/log.log", rollingInterval: RollingInterval.Day)
 .CreateLogger();
