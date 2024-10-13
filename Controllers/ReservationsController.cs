@@ -42,7 +42,7 @@ namespace api.Controllers
             END AS TimePeriod,
              RestaurantId, COUNT(*) as count
             FROM reservations
-            WHERE RestaurantId = 3 
+            WHERE RestaurantId = @RestaurantId
             AND TIME(AttendanceTime) BETWEEN '01:00:00' AND '23:59:59' 
         GROUP BY TimePeriod", new { RestaurantId });
         }
