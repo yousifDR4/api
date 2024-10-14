@@ -170,7 +170,7 @@ namespace api
                 return 0;
             }
         }
-        public async Task<int> UpdateAsync<T>(T parameters, int Id)
+        public async Task<int> UpdateAsync<T1, T2>(T1 parameters, int Id)
         {
             if (parameters != null)
             {
@@ -182,7 +182,7 @@ namespace api
                         setClauses.Add($"{keys[i]} = @{keys[i]}");
                 }
                 string setClause = string.Join(", ", setClauses);
-                string query = $"UPDATE {typeof(T).Name} SET {setClause} WHERE Id = @Id";
+                string query = $"UPDATE {typeof(T2).Name} SET {setClause} WHERE Id = @Id";
                 if (connection.State == ConnectionState.Closed)
                 {
                     try

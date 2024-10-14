@@ -75,7 +75,5 @@ namespace api.Services
 
             return System.IO.File.ReadAllBytes(path);
         }
-
-
     }
 }
