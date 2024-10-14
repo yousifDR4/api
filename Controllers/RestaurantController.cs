@@ -50,10 +50,10 @@ namespace api.Controllers
         [HttpPut("{restaurantId}")]
         [Authorize]
         [RestaurantMiddlewareOwner]
-        public async Task<IActionResult> update(int restaurantId, Restaurants restaurant)
+        public async Task<IActionResult> UpdateRestaurants(int restaurantId, RestaurantsUpdateDto restaurant)
         {
-            await _dapperContext.UpdateAsync(restaurant, restaurantId);
-            return Ok();
+            await _dapperContext.UpdateAsync<RestaurantsUpdateDto, Restaurants>(restaurant, restaurantId);
+            return Ok("updated");
         }
         [HttpDelete("{restaurantId}")]
         [Authorize]
