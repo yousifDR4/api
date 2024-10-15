@@ -20,7 +20,7 @@ namespace api
             if (connection.State == ConnectionState.Open)
             {
                 await connection.CloseAsync();
-                connection.Dispose();
+              
             }
 
         }
