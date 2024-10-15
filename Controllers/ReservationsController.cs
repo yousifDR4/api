@@ -94,12 +94,12 @@ namespace api.Controllers
                 reservation.UserId = parsedUserId;
                 reservation.IsActive = false;
                 reservation.IsCancelled = false;
-                await _dapperContext.InsertAsync<Reservations>(reservation);
+               return  OK(await _dapperContext.InsertAsync<Reservations>(reservation));
             }
         }
         [HttpPut("user/{UserId}")]
         [Authorize]
-        public async Task<IActionResult> CreateReservation(int UserId,Reservations reservation)
+        public async Task<IActionResult> UpdateReservation(int UserId,Reservations reservation)
         {
             var userIdClaim = User.FindFirst("jti")?.Value + "";
             if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out int parsedUserId))
@@ -107,7 +107,7 @@ namespace api.Controllers
                 reservation.UserId = parsedUserId;
                 reservation.IsActive = false;
                 reservation.IsCancelled = false;
-               return await _dapperContext.InsertAsync<Reservations>(reservation);
+               return Ok( await _dapperContext.InsertAsync<Reservations>(reservation));
             }
         }
     }
