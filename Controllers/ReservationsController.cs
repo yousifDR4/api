@@ -1,6 +1,8 @@
 using api.Models;
 using api.Dto;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using api.Middleware;
 namespace api.Controllers
 {
     [ApiController]
@@ -28,7 +30,28 @@ namespace api.Controllers
            WHERE RestaurantId=@RestaurantId 
            GROUP BY isCancelled", new { RestaurantId });
         }
-
+        [Authorize]
+        [RestaurantMiddlewareOwner]
+        [HttpGet("restaurant/{RestaurantId}/DESC")]
+        public async Task<IEnumerable<object>> GetSpecificRestaurantReservisons(int RestaurantId)
+        {
+            return await _dapperContext.QueryAsync<object>
+            (@"SELECT reservations.*, Users.name,Users.mobile  FROM  reservations
+              JOIN Users ON reservations.userId =Users.Id
+              WHERE RestaurantId=@RestaurantId 
+              ORDER BY reservations.AttendanceTime  DESC", new { RestaurantId });
+        }
+        [Authorize]
+        [RestaurantMiddlewareOwner]
+        [HttpGet("restaurant/{RestaurantId}/ASC")]
+        public async Task<IEnumerable<object>> GetSpecificRestaurantReservisonsAsc(int RestaurantId)
+        {
+            return await _dapperContext.QueryAsync<object>
+            (@"SELECT  reservations.*, Users.name,Users.mobile  FROM  reservations
+              JOIN Users ON reservations.userId =Users.Id
+              WHERE RestaurantId=@RestaurantId 
+              ORDER BY reservations.AttendanceTime  ASC", new { RestaurantId });
+        }
         [HttpGet("count/timePeriod/{RestaurantId}")]
         public async Task<IEnumerable<object>> GetTimePeriod(int RestaurantId)
         {
@@ -61,8 +84,6 @@ namespace api.Controllers
         GROUP BY DayName, isCancelled",
         new { RestaurantId });
         }
-
-
 
     }
 }
