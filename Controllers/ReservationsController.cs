@@ -84,6 +84,7 @@ namespace api.Controllers
         GROUP BY DayName, isCancelled",
         new { RestaurantId });
         }
+
         // [HttpPost("")]
         // [Authorize]
         // public async Task<IActionResult> CreateReservation(Reservations reservation)
@@ -110,5 +111,6 @@ namespace api.Controllers
         //         await _dapperContext.InsertAsync<Reservations>(reservation);
         //     }
         // }
+
     }
 }
