@@ -84,33 +84,73 @@ namespace api.Controllers
         GROUP BY DayName, isCancelled",
         new { RestaurantId });
         }
+        [HttpPost("")]
+        [Authorize]
+        public async Task<IActionResult> CreateReservation(Reservations reservation)
+        {
+            var userIdClaim = User.FindFirst("jti")?.Value + "";
+            if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out int parsedUserId))
+            {
+                reservation.UserId = parsedUserId;
+                reservation.IsActive = false;
+                reservation.IsCancelled = false;
+                var createdReservation = await _dapperContext.InsertAsync(reservation);
+                return CreatedAtAction(nameof(CreateReservation), new { id = createdReservation });
+            }
+            return BadRequest();
+        }
+        [HttpPut("{ReservationId}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateUserReservation(int ReservationId, Reservations reservation)
+        {
+            var userIdClaim = User.FindFirst("jti")?.Value + "";
+            if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out int parsedUserId))
+            {
+                reservation.UserId = parsedUserId;
+                int row = await _dapperContext.ExecuteAsync(@"
+                UPDATE reservations SET IsActive=@IsActive,IsCancelled=@IsCancelled
+                ,AttendanceTime=@AttendanceTime
+                 WHERE Id=@Id AND UserId=@UserId", new
+                {
+                    reservation.IsActive,
+                    reservation.IsCancelled,
+                    reservation.AttendanceTime,
+                    Id = ReservationId,
+                    UserId = parsedUserId
+                });
+                return row > 0 ? Ok() : BadRequest();
+            }
+            else
+                return BadRequest();
+        }
+        [HttpPut("{ReservationId}/restaurant/{RestaurantId}")]
+        [Authorize]
+        [RestaurantMiddlewareOwner]
+        public async Task<IActionResult> UpdateUserReservationFromRestaurant(int ReservationId, int RestaurantId, Reservations reservation)
+        {
+            int row = await _dapperContext.ExecuteAsync(@"
+                UPDATE reservations SET IsActive=@IsActive,IsCancelled=@IsCancelled,AttendanceTime=@AttendanceTime
+                 WHERE Id=@Id AND RestaurantId=@RestaurantId",
+             new
+             {
+                 reservation.IsActive,
+                 reservation.IsCancelled,
+                 reservation.AttendanceTime,
+                 Id = ReservationId,
+                 RestaurantId
+             });
+            return row > 0 ? Ok() : BadRequest();
 
-        // [HttpPost("")]
-        // [Authorize]
-        // public async Task<IActionResult> CreateReservation(Reservations reservation)
-        // {
-        //     var userIdClaim = User.FindFirst("jti")?.Value + "";
-        //     if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out int parsedUserId))
-        //     {
-        //         reservation.UserId = parsedUserId;
-        //         reservation.IsActive = false;
-        //         reservation.IsCancelled = false;
-        //         await _dapperContext.InsertAsync<Reservations>(reservation);
-        //     }
-        // }
-        // [HttpPut("user/{UserId}")]
-        // [Authorize]
-        // public async Task<IActionResult> CreateReservation(int UserId,Reservations reservation)
-        // {
-        //     var userIdClaim = User.FindFirst("jti")?.Value + "";
-        //     if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out int parsedUserId))
-        //     {
-        //         reservation.UserId = parsedUserId;
-        //         reservation.IsActive = false;
-        //         reservation.IsCancelled = false;
-        //         await _dapperContext.InsertAsync<Reservations>(reservation);
-        //     }
-        // }
-
+        }
+        [HttpDelete("{ReservationId}/restaurant/{RestaurantId}")]
+        [Authorize]
+        [RestaurantMiddlewareOwner]
+        public async Task<IActionResult> DeleteUserReservationFromRestaurant(int ReservationId, int RestaurantId)
+        {
+            int row = await _dapperContext.ExecuteAsync(@"
+                DELETE FROM reservations 
+                 WHERE Id=@Id AND RestaurantId=@RestaurantId", new { Id = ReservationId, RestaurantId });
+            return row > 0 ? Ok() : BadRequest();
+        }
     }
 }
