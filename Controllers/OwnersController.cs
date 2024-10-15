@@ -43,7 +43,7 @@ namespace api.Controllers
             if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out int parsedUserId))
             {
                 userId = parsedUserId;
-                Log.Information("User Id: {@userId}", userId);
+                Log.Information("request owner User Id: {@userId}", userId);
                 object restaurants = await _Model.OwnersAll<object>(userId);
                 if (restaurants != null)
                     return Ok(restaurants);
