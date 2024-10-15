@@ -107,7 +107,7 @@ namespace api.Controllers
                 reservation.UserId = parsedUserId;
                 reservation.IsActive = false;
                 reservation.IsCancelled = false;
-                await _dapperContext.InsertAsync<Reservations>(reservation);
+               return await _dapperContext.InsertAsync<Reservations>(reservation);
             }
         }
     }
