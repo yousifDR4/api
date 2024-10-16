@@ -152,5 +152,15 @@ namespace api.Controllers
                  WHERE Id=@Id AND RestaurantId=@RestaurantId", new { Id = ReservationId, RestaurantId });
             return row > 0 ? Ok() : BadRequest();
         }
+
+        [HttpDelete("restaurant/{RestaurantId}")]
+        [Authorize]
+        [RestaurantMiddlewareOwner]
+        public async Task<IActionResult> DeleteManyUserReservation(int RestaurantId, DeleteReservasionsDto deleteReservasions)
+        {
+            int row = await _dapperContext.ExecuteAsync(@"DELETE FROM reservations WHERE Id IN @ReservasionIds AND RestaurantId=@RestaurantId",
+             new { deleteReservasions.ReservasionIds, RestaurantId });
+            return row > 0 ? Ok() : BadRequest();
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace api
             if (connection.State == ConnectionState.Open)
             {
                 await connection.CloseAsync();
-              
+
             }
 
         }
@@ -268,6 +268,9 @@ namespace api
             await CloseConnection();
             return result;
         }
-        
+
+
+      
     }
 }
+
